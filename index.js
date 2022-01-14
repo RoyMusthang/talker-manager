@@ -7,6 +7,7 @@ app.use(bodyParser.json());
 
 const HTTP_OK_STATUS = 200;
 const PORT = '3000';
+const arrayNull = [];
 
 // não remova esse endpoint, e para o avaliador funcionar
 app.get('/', (_request, response) => {
@@ -16,9 +17,17 @@ app.get('/', (_request, response) => {
 app.get('/talker', async (_req, res) => {
   const fileConteiner = await fs.readFile('./talker.json', 'utf8')
     .then((e) => JSON.parse(e))
+  if (!fileConteiner) return res.status(200).send(arrayNull);
   res.status(200).send(fileConteiner);
 })
 
-app.listen(PORT, () => {
-  console.log('Online');
-});
+app.get('/talker/:id', async (req, res) => {
+  const { id } = req.params;
+  const fileConteiner = await fs.readFile('./talker.json', 'utf8')
+    .then((e) => JSON.parse(e));
+  const talkerId = fileConteiner.find(elem => elem.id === parseInt(id));
+  if (!talkerId) return res.status(404)
+    .json({ message: "Pessoa palestrante não encontrada"}); 
+  res.status(200).json(talkerId)
+})
+
