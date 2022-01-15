@@ -3,8 +3,12 @@ const bodyParser = require('body-parser');
 const fs = require('fs').promises;
 const {
   loginAuthentication,
-  genereteToken,
+  generateToken,
 } = require('./middlewares/loginAuthentication.js');
+const {
+  findToken,
+  validToken,
+} = require('./middlewares/validToken.js');
 
 const app = express();
 app.use(bodyParser.json());
@@ -12,6 +16,7 @@ app.use(bodyParser.json());
 const HTTP_OK_STATUS = 200;
 const PORT = '3000';
 const arrayNull = [];
+const TOKEN = generateToken();
 
 // não remova esse endpoint, e para o avaliador funcionar
 app.get('/', (_request, response) => {
@@ -37,10 +42,15 @@ app.get('/talker/:id', async (req, res) => {
   res.status(200).json(talkerId);
 });
 
-app.post('/login', loginAuthentication, (_req, res) => {
-const token = genereteToken();
-  res.status(200).json({ token });
+app.post('/login', loginAuthentication, (req, res) => {
+  req.header = {...req.header, "authorization": TOKEN}
+  res.status(200).json({ token: TOKEN });
 });
+
+app.post('/talker', findToken, validToken, async (req, res) => {
+  const write = await fs.writeFile('./token.json', TOKEN)
+  res.status(200).json({ message: 'Usuario adicionado!'})
+})
 
 app.listen(PORT, () => {
   console.log('Online');

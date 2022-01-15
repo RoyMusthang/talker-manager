@@ -1,4 +1,6 @@
-function genereteToken() {
+const emailRegexp = /\S+@\S+.\S+/;
+
+function generateToken() {
     let token = '';
     const base = 16; 
     const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -9,11 +11,8 @@ function genereteToken() {
 }
 
 function loginAuthentication(req, res, next) {
-const emailRegexp = /\S+@\S+.\S+/;
-// https://stackoverflow.com/questions/52456065/how-to-format-and-validate-email-node-js    
-
 const { email, password } = req.body;
-  if (email === undefined) {
+  if (!email) {
     res.status(400).json({ message: 'O campo "email" é obrigatório' });
   } else if (!emailRegexp.test(email)) {
     res.status(400).json({ message: 'O "email" deve ter o formato "email@email.com"' });
@@ -28,5 +27,5 @@ const { email, password } = req.body;
 
 module.exports = {
   loginAuthentication,
-  genereteToken,
+  generateToken,
 };
