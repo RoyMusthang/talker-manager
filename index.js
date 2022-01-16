@@ -5,14 +5,8 @@ const {
   loginAuthentication,
   generateToken,
 } = require('./middlewares/loginAuthentication.js');
-const {
-  findToken,
-  validToken,
-} = require('./middlewares/validToken.js');
-const {
-  validNameLength,
-  validName,
-} = require('./middlewares/validName.js');
+const validToken = require('./middlewares/validToken.js');
+const validName = require('./middlewares/validName.js');
 const {
   validAgeUser,
   validAgeNotNull,
@@ -61,9 +55,7 @@ app.post('/login', loginAuthentication, (req, res) => {
 });
 
 app.post('/talker',
-  findToken,
   validToken,
-  validNameLength,
   validName,
   validAgeUser,
   validAgeNotNull,

@@ -29,10 +29,11 @@ function validDate(req, res, next) {
 
 function validRate(req, res, next) {
   const { talk: { rate } } = req.body;
+  const rateCheck = listRate.some((e) => e === rate);
   if (!rate) {
     res.status(400).json(testBuniutu);
   }
-  if (!(rate in listRate)) {
+  if (!rateCheck) {
     res.status(400).json({ message: 'O campo "rate" deve ser um inteiro de 1 à 5' });
   }
   next();
