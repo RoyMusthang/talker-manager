@@ -8,7 +8,7 @@ function generateToken() {
     //   token += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
     // }
     // return token;
-  return "7mqaVRXJSp886CGr"
+  return '7mqaVRXJSp886CGr';
 }
 
 function loginAuthentication(req, res, next) {

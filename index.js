@@ -12,7 +12,7 @@ const {
 const {
   validNameLength,
   validName,
-} = require('./middlewares/validName.js')
+} = require('./middlewares/validName.js');
 const {
   validAgeUser,
   validAgeNotNull,
@@ -56,7 +56,7 @@ app.get('/talker/:id', async (req, res) => {
 });
 
 app.post('/login', loginAuthentication, (req, res) => {
-  req.header = {...req.header, "authorization": TOKEN}
+  req.header = { ...req.header, authorization: TOKEN };
   res.status(200).json({ token: TOKEN });
 });
 
@@ -72,12 +72,12 @@ app.post('/talker',
   validRate,
   async (req, res) => {
     const conteudo = req.body;
-    conteudo.id = 5
+    conteudo.id = 5;
     const texto = JSON.stringify([conteudo], null, 2);
-    console.log(texto)
+    console.log(texto);
     await fs.writeFile('./talker.json', texto);
     res.status(201).json(conteudo);
-})
+});
 
 app.listen(PORT, () => {
   console.log('Online');
