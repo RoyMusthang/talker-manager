@@ -9,6 +9,19 @@ const {
   findToken,
   validToken,
 } = require('./middlewares/validToken.js');
+const {
+  validNameLength,
+  validName,
+} = require('./middlewares/validName.js')
+const {
+  validAgeUser,
+  validAgeNotNull,
+} = require('./middlewares/validAgeTalker.js');
+const {
+  validTalk,
+  validRate,
+  validDate,
+} = require('./middlewares/validTalker.js');
 
 const app = express();
 app.use(bodyParser.json());
@@ -47,9 +60,23 @@ app.post('/login', loginAuthentication, (req, res) => {
   res.status(200).json({ token: TOKEN });
 });
 
-app.post('/talker', findToken, validToken, async (req, res) => {
-  const write = await fs.writeFile('./token.json', TOKEN)
-  res.status(200).json({ message: 'Usuario adicionado!'})
+app.post('/talker',
+  findToken,
+  validToken,
+  validNameLength,
+  validName,
+  validAgeUser,
+  validAgeNotNull,
+  validTalk,
+  validDate,
+  validRate,
+  async (req, res) => {
+    const conteudo = req.body;
+    conteudo.id = 5
+    const texto = JSON.stringify([conteudo], null, 2);
+    console.log(texto)
+    await fs.writeFile('./talker.json', texto);
+    res.status(201).json(conteudo);
 })
 
 app.listen(PORT, () => {
