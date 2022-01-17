@@ -1,13 +1,13 @@
 const emailRegexp = /\S+@\S+.\S+/;
 
 function generateToken() {
-    let token = '';
-    const base = 16;
-    const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    for (let i = 0; i < base; i += 1) {
-      token += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
-    }
-    return token;
+  let token = '';
+  const base = 16;
+  const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  for (let i = 0; i < base; i += 1) {
+    token += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+  }
+  return token;
 }
 
 function loginAuthentication(req, res, next) {

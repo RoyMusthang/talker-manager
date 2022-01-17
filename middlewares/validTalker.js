@@ -9,7 +9,7 @@ const testBuniutu = {
 function validTalk(req, res, next) {
   const { talk } = req.body;
   if (!talk) {
-    return res.status(400).json(testBuniutu);
+    res.status(400).json(testBuniutu);
   }
   next();
 }

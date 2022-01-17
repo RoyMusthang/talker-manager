@@ -66,7 +66,6 @@ app.post('/talker',
     const conteudo = req.body;
     conteudo.id = 5;
     const texto = JSON.stringify([conteudo], null, 2);
-    console.log(texto);
     await fs.writeFile('./talker.json', texto);
     res.status(201).json(conteudo);
 });
