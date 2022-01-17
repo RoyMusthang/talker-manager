@@ -70,6 +70,9 @@ app.post('/talker',
     return res.status(201).json(conteudo);
 });
 
+app.put('/talker/:id', async (req, res) => {
+})
+
 app.listen(PORT, () => {
   console.log('Online');
 });
