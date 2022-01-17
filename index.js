@@ -63,15 +63,17 @@ app.post('/talker',
   validDate,
   validRate,
   async (req, res) => {
+    const talk = await fs.readFile('./talker.json', 'utf8');
+    const talkerJson = await JSON.parse(talk)
     const conteudo = req.body;
-    conteudo.id = 5;
+    conteudo.id = talkerJson.length + 1;
     const texto = JSON.stringify([conteudo], null, 2);
     await fs.writeFile('./talker.json', texto);
     return res.status(201).json(conteudo);
 });
 
-app.put('/talker/:id', async (req, res) => {
-})
+// app.put('/talker/:id', async (req, res) => {
+// })
 
 app.listen(PORT, () => {
   console.log('Online');
