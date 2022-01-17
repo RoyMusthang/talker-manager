@@ -9,7 +9,7 @@ const testBuniutu = {
 function validTalk(req, res, next) {
   const { talk } = req.body;
   if (!talk) {
-    res.status(400).json(testBuniutu);
+    return res.status(400).json(testBuniutu);
   }
   next();
 }
@@ -17,10 +17,10 @@ function validTalk(req, res, next) {
 function validDate(req, res, next) {
   const { talk: { watchedAt } } = req.body;
   if (!watchedAt) {
-      res.status(400).json(testBuniutu);
+      return res.status(400).json(testBuniutu);
   }
   if (!regexDate.test(watchedAt)) {
-    res.status(400).json({
+    return res.status(400).json({
       message: 'O campo "watchedAt" deve ter o formato "dd/mm/aaaa"',
     });
   }
@@ -31,10 +31,10 @@ function validRate(req, res, next) {
   const { talk: { rate } } = req.body;
   const rateCheck = listRate.some((e) => e === rate);
   if (!rate) {
-    res.status(400).json(testBuniutu);
+    return res.status(400).json(testBuniutu);
   }
   if (!rateCheck) {
-    res.status(400).json({ message: 'O campo "rate" deve ser um inteiro de 1 à 5' });
+    return res.status(400).json({ message: 'O campo "rate" deve ser um inteiro de 1 à 5' });
   }
   next();
 }

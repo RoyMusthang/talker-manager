@@ -13,13 +13,13 @@ function generateToken() {
 function loginAuthentication(req, res, next) {
 const { email, password } = req.body;
   if (!email) {
-    res.status(400).json({ message: 'O campo "email" é obrigatório' });
+    return res.status(400).json({ message: 'O campo "email" é obrigatório' });
   } else if (!emailRegexp.test(email)) {
-    res.status(400).json({ message: 'O "email" deve ter o formato "email@email.com"' });
+    return res.status(400).json({ message: 'O "email" deve ter o formato "email@email.com"' });
   } else if (!password) {
-    res.status(400).json({ message: 'O campo "password" é obrigatório' });
+    return res.status(400).json({ message: 'O campo "password" é obrigatório' });
   } else if (password.length < 6) {
-    res.status(400).json({ message: 'O "password" deve ter pelo menos 6 caracteres' });
+    return res.status(400).json({ message: 'O "password" deve ter pelo menos 6 caracteres' });
   } 
 
   next();

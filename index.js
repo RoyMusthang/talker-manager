@@ -34,7 +34,7 @@ app.get('/talker', async (_req, res) => {
   const fileConteiner = await fs.readFile('./talker.json', 'utf8')
     .then((e) => JSON.parse(e));
   if (!fileConteiner) return res.status(200).send(arrayNull);
-  res.status(200).send(fileConteiner);
+  return res.status(200).send(fileConteiner);
 });
 
 app.get('/talker/:id', async (req, res) => {
@@ -46,12 +46,12 @@ app.get('/talker/:id', async (req, res) => {
  return res.status(404)
     .json({ message: 'Pessoa palestrante não encontrada' }); 
 } 
-  res.status(200).json(talkerId);
+  return res.status(200).json(talkerId);
 });
 
 app.post('/login', loginAuthentication, (req, res) => {
   req.header = { ...req.header, authorization: TOKEN };
-  res.status(200).json({ token: TOKEN });
+  return res.status(200).json({ token: TOKEN });
 });
 
 app.post('/talker',
@@ -67,7 +67,7 @@ app.post('/talker',
     conteudo.id = 5;
     const texto = JSON.stringify([conteudo], null, 2);
     await fs.writeFile('./talker.json', texto);
-    res.status(201).json(conteudo);
+    return res.status(201).json(conteudo);
 });
 
 app.listen(PORT, () => {
