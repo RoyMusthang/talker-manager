@@ -1,79 +1,66 @@
 const router = require('express').Router();
 const fs = require('fs').promises;
-const { readFile } = require('../helper/fileSystem');
+const readFile = require('../helper/fileSystem');
 
-const validToken = require('./middlewares/validToken.js');
-const validName = require('./middlewares/validName.js');
-const {
-  validAgeUser,
-  validAgeNotNull,
-} = require('./middlewares/validAgeTalker.js');
+const validToken = require('../middlewares/validToken');
+const { validAge, validName } = require('../middlewares/validUser');
 const {
   validTalk,
   validRate,
   validDate,
-} = require('./middlewares/validTalker.js');
+} = require('../middlewares/validTalker.js');
 
-app.get('/talker', async (_req, res) => {
-  const fileConteiner = await readFile()
-  if (!fileConteiner) return res.status(200).send(arrayNull);
-  return res.status(200).send(fileConteiner);
+router.get('/', async (_req, res) => {
+  const fileConteiner = await readFile();
+  if (!fileConteiner) return res.status(200).json([]);
+  return res.status(200).json(fileConteiner);
 });
-const {
-  loginAuthentication,
-  generateToken,
-} = require('./middlewares/loginAuthentication.js');
 
-
-app.get('/talker/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
   const { id } = req.params;
-  const fileConteiner = await fs.readFile('./talker.json', 'utf8')
-    .then((e) => JSON.parse(e));
+  const fileConteiner = await readFile();
   const talkerId = fileConteiner.find((elem) => elem.id === Number(id));
   if (!talkerId) {
- return res.status(404)
-    .json({ message: 'Pessoa palestrante não encontrada' }); 
-} 
+    return res.status(404).json({ message: 'Pessoa palestrante não encontrada' }); 
+  } 
   return res.status(200).json(talkerId);
 });
 
-
-app.post('/talker',
+router.post('/',
   validToken,
   validName,
-  validAgeUser,
-  validAgeNotNull,
+  validAge,
   validTalk,
   validDate,
   validRate,
   async (req, res) => {
-    const talk = await fs.readFile('./talker.json', 'utf8');
-    const talkerJson = await JSON.parse(talk)
+    const fileConteiner = await readFile();
     const conteudo = req.body;
-    conteudo.id = talkerJson.length + 1;
+    conteudo.id = fileConteiner.length + 1;
     const texto = JSON.stringify([conteudo], null, 2);
-    await fs.writeFile('./talker.json', texto);
+    await fs.writeFile('../talker.json', texto);
     return res.status(201).json(conteudo);
 });
 
-app.put('/talker/:id',
+router.put('/:id',
   validToken,
   validName,
-  validAgeUser,
-  validAgeNotNull,
+  validAge,
   validTalk,
   validDate,
   validRate,
   async (req, res) => {
-    const fileConteiner = fs.readFile('./talker.json', 'utf8')
-      .then((e) => JSON.parse(e));
+    const fileConteiner = await readFile();
     const { id } = req.params;
     const { name, age, talk } = req.body;
     const talkerId = fileConteiner.findIndex((elem) => elem.id === Number(id));
-    if (!talkerId) return res.status(404)
-        .json({ message: 'Pessoa palestrante não encontrada' });
-    fileConteiner[talkId] = { ...fileConteiner[talkerId], name, age, talk };
-    fs.writeFile('./talker.json', JSON.stringify(fileConteiner));
-    return res.status(200).json(fileConteiner);
+    if (!talkerId) {
+ return res.status(404)
+        .json({ message: 'Pessoa palestrante não encontrada' }); 
+}
+    fileConteiner[talkerId] = { ...fileConteiner[talkerId], name, age, talk };
+    await fs.writeFile('./talker.json', JSON.stringify(fileConteiner, null, 2));
+    return res.status(200).json({ id: Number(id), name, age, talk });
   });
 
+module.exports = router;

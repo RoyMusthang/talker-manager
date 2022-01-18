@@ -4,8 +4,8 @@ const {
   generateToken,
 } = require('../middlewares/loginAuthentication');
 
-router.post('/login', loginAuthentication, (req, res) => {
-  return res.status(200).json({ token: generateToken() });
+router.post('/login', loginAuthentication, (_req, res) => {
+  res.status(200).json({ token: generateToken() });
 });
 
 module.exports = router;
