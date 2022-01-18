@@ -26,6 +26,15 @@ router.get('/:id', async (req, res) => {
   return res.status(200).json(talkerId);
 });
 
+router.get('/search', validToken, async (req, res) => {
+    const search = req.query;
+    const fileConteiner = await readFile();
+
+    if (!search) return res.status(200).json(fileConteiner);
+    const filter = fileConteiner.filter((value) => value.name.includes(search));
+    return res.status(200).json(filter);
+  });
+
 router.post('/',
   validToken,
   validName,
@@ -38,7 +47,7 @@ router.post('/',
     const conteudo = req.body;
     conteudo.id = fileConteiner.length + 1;
     const texto = JSON.stringify([conteudo], null, 2);
-    await fs.writeFile('../talker.json', texto);
+    await fs.writeFile('./talker.json', texto);
     return res.status(201).json(conteudo);
 });
 
@@ -55,17 +64,15 @@ router.put('/:id',
     const { name, age, talk } = req.body;
     const talkerId = fileConteiner.findIndex((elem) => elem.id === Number(id));
     if (!talkerId) {
- return res.status(404)
+      return res.status(404)
         .json({ message: 'Pessoa palestrante não encontrada' }); 
-}
+    }
     fileConteiner[talkerId] = { ...fileConteiner[talkerId], name, age, talk };
     await fs.writeFile('./talker.json', JSON.stringify(fileConteiner, null, 2));
     return res.status(200).json({ id: Number(id), name, age, talk });
   });
 
-  router.delete('/:id',
-    validToken,
-    async (req, res) => {
+  router.delete('/:id', validToken, async (req, res) => {
       const { id } = req.params;
       const fileConteiner = await readFile();
       const talkerFind = fileConteiner.findIndex((p) => p.id === Number(id));
@@ -76,7 +83,6 @@ router.put('/:id',
       const filter = fileConteiner.filter((value) => value.id !== Number(id));
   
       await fs.writeFile('./talker.json', JSON.stringify(filter, null, 2));
-      return res.status(204).json({ message: 'Pessoa palestrante deletada com sucesso' });
+      return res.status(204).json();
     });
-
 module.exports = router;
