@@ -11,29 +11,30 @@ const {
 } = require('../middlewares/validTalker.js');
 
 router.get('/', async (_req, res) => {
-  const fileConteiner = await readFile();
-  if (!fileConteiner) return res.status(200).json([]);
-  return res.status(200).json(fileConteiner);
-});
-
-router.get('/:id', async (req, res) => {
-  const { id } = req.params;
-  const fileConteiner = await readFile();
-  const talkerId = fileConteiner.find((elem) => elem.id === Number(id));
-  if (!talkerId) {
-    return res.status(404).json({ message: 'Pessoa palestrante não encontrada' }); 
-  } 
-  return res.status(200).json(talkerId);
+  const fileContainer = await readFile();
+  if (!fileContainer) return res.status(200).json([]);
+return res.status(200).json(fileContainer);
 });
 
 router.get('/search', validToken, async (req, res) => {
-    const search = req.query;
-    const fileConteiner = await readFile();
+  const { q } = req.query;
+  const fileContainer = await readFile();
+  console.log("N.a")
 
-    if (!search) return res.status(200).json(fileConteiner);
-    const filter = fileConteiner.filter((value) => value.name.includes(search));
-    return res.status(200).json(filter);
-  });
+  if (!q) return res.status(200).json({ message: "down pilou" });
+  const filter = fileContainer.filter((value) => value.name.includes(q));
+  return res.status(200).json(filter);
+});
+
+router.get('/:id', async (req, res) => {
+const { id } = req.params;
+const fileContainer = await readFile();
+const talkerId = fileContainer.find((elem) => elem.id === Number(id));
+if (!talkerId) {
+  return res.status(404).json({ message: 'Pessoa palestrante não encontrada' }); 
+} 
+return res.status(200).json(talkerId);
+});
 
 router.post('/',
   validToken,
@@ -43,10 +44,10 @@ router.post('/',
   validDate,
   validRate,
   async (req, res) => {
-    const fileConteiner = await readFile();
+    const fileContainer = await readFile();
     const conteudo = req.body;
-    conteudo.id = fileConteiner.length + 1;
-    const texto = JSON.stringify([conteudo], null, 2);
+    conteudo.id = fileContainer.length + 1;
+    const texto = JSON.stringify([...fileContainer, conteudo], null, 2);
     await fs.writeFile('./talker.json', texto);
     return res.status(201).json(conteudo);
 });
@@ -59,30 +60,30 @@ router.put('/:id',
   validDate,
   validRate,
   async (req, res) => {
-    const fileConteiner = await readFile();
+    const fileContainer = await readFile();
     const { id } = req.params;
     const { name, age, talk } = req.body;
-    const talkerId = fileConteiner.findIndex((elem) => elem.id === Number(id));
+    const talkerId = fileContainer.find((elem) => elem.id === Number(id));
     if (!talkerId) {
       return res.status(404)
-        .json({ message: 'Pessoa palestrante não encontrada' }); 
+        .json({ message: 'Pessoa palestrante não encontrada' });
     }
-    fileConteiner[talkerId] = { ...fileConteiner[talkerId], name, age, talk };
-    await fs.writeFile('./talker.json', JSON.stringify(fileConteiner, null, 2));
+    const dereguejhonson = { id: Number(id), name, age, talk };
+    await fs.writeFile('./talker.json', JSON.stringify([dereguejhonson], null, 2));
     return res.status(200).json({ id: Number(id), name, age, talk });
   });
 
   router.delete('/:id', validToken, async (req, res) => {
-      const { id } = req.params;
-      const fileConteiner = await readFile();
-      const talkerFind = fileConteiner.findIndex((p) => p.id === Number(id));
-      if (!talkerFind) {
-        return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
-      }
-  
-      const filter = fileConteiner.filter((value) => value.id !== Number(id));
-  
-      await fs.writeFile('./talker.json', JSON.stringify(filter, null, 2));
-      return res.status(204).json();
-    });
+    const { id } = req.params;
+    const fileContainer = await readFile();
+    const talkerFind = fileContainer.find((elem) => elem.id === Number(id));
+    if (!talkerFind) {
+      return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
+    }
+
+    const filter = fileContainer.filter((value) => value.id !== Number(id));
+
+    await fs.writeFile('./talker.json', JSON.stringify(filter, null, 2));
+    return res.status(204).json();
+  });
 module.exports = router;
