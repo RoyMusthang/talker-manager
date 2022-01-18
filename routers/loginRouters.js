@@ -5,8 +5,12 @@ const {
 } = require('../middlewares/loginAuthentication.js');
 
 router.post('/', loginAuthentication, (_req, res) => {
-  const token = generateToken();
+  try {
+    const token = generateToken();
     res.status(200).json({ token });
+  } catch (err) {
+    console.error(err);
+  }
 });
 
 module.exports = router;
