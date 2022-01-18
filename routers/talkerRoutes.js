@@ -19,9 +19,9 @@ return res.status(200).json(fileContainer);
 router.get('/search', validToken, async (req, res) => {
   const { q } = req.query;
   const fileContainer = await readFile();
-  console.log("N.a")
+  console.log('N.a');
 
-  if (!q) return res.status(200).json({ message: "down pilou" });
+  if (!q) return res.status(200).json({ message: 'down pilou' });
   const filter = fileContainer.filter((value) => value.name.includes(q));
   return res.status(200).json(filter);
 });

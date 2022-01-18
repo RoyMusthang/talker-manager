@@ -1,5 +1,5 @@
 function validToken(req, res, next) {
-  console.log("nasa")
+  console.log('nasa');
   const { authorization } = req.headers;
   if (!authorization) {
     return res.status(401).json({ message: 'Token não encontrado' });
